@@ -1,3 +1,19 @@
+import requests
+
+
+def get_provider(ip_address):
+    try:
+        params = {'ip': ip_address}
+        IP_API_URL = f'http://ip-api.com/json/{params}'
+        response = requests.get(IP_API_URL, params=params)
+        provider = response.json().get('org')
+        if provider:
+            return provider
+        return 'Неизвестный провайдер'
+    except Exception as error:
+         raise Exception(f'Сбой при обращении к сервису IP-API: {error}')
+
+
 def get_octets_from_ip(ip_address):
     """Преобразование ip-адреса (либо маски подсети) в список октетов."""
     octet_list = []
@@ -31,7 +47,8 @@ def filter_ip_addresses(network_ip, subnet_mask, ip_addresses):
             octet_list, subnet_mask_octet_list
         )
         if ip_and_mask_compare_list == network_and_subnet_compare_list:
-            filtered_list.append(ip)
+            provider = get_provider(ip)
+            filtered_list.append({ip: provider})
     return filtered_list
 
 
