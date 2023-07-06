@@ -33,3 +33,15 @@ def filter_ip_addresses(network_ip, subnet_mask, ip_addresses):
         if ip_and_mask_compare_list == network_and_subnet_compare_list:
             filtered_list.append(ip)
     return filtered_list
+
+
+def main():
+    with open('input.txt', 'r') as file:
+        network_ip = file.readline()
+        subnet_mask = file.readline()
+        ip_addresses = file.readline().split()
+    print(filter_ip_addresses(network_ip, subnet_mask, ip_addresses))
+
+
+if __name__ == '__main__':
+    main()
