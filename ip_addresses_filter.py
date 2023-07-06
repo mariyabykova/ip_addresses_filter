@@ -2,10 +2,10 @@ import requests
 
 
 def get_provider(ip_address):
+    """Определение провайдера по ip-адресу."""
     try:
-        params = {'ip': ip_address}
-        IP_API_URL = f'http://ip-api.com/json/{params}'
-        response = requests.get(IP_API_URL, params=params)
+        IP_API_URL = f'http://ip-api.com/json/{ip_address}'
+        response = requests.get(IP_API_URL)
         provider = response.json().get('org')
         if provider:
             return provider
