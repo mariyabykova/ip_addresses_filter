@@ -4,6 +4,8 @@ import requests
 
 IS_LIST = False
 PATH = 'data.csv'
+FILE_1 = 'input.txt'
+FILE_2 = 'input_csv.txt'
 
 
 def read_csv(path):
@@ -68,13 +70,17 @@ def filter_ip_addresses(network_ip, subnet_mask, ip_addresses):
 
 
 def read_list_data(is_list):
-    if is_list == False:
-        ip_addresses = read_csv(PATH)
-    with open('input.txt', 'r') as file:
-        network_ip = file.readline()
-        subnet_mask = file.readline()
-        if is_list == True:
+    if is_list == True:
+        with open(FILE_1, 'r') as file:
+            network_ip = file.readline()
+            subnet_mask = file.readline()
             ip_addresses = file.readline().split()
+    if is_list == False:
+        with open(FILE_2, 'r') as file:
+            network_ip = file.readline()
+            subnet_mask = file.readline()
+            path = file.readline()
+        ip_addresses = read_csv(path)
     return network_ip, subnet_mask, ip_addresses
 
 
