@@ -1,15 +1,17 @@
 import csv
+from typing import Dict, List, Tuple, Union
+
 import requests
 
 
-IS_LIST = False
-PATH = 'data.csv'
-EXPORT_PATH = 'output_data.csv'
-FILE_1 = 'input.txt'
-FILE_2 = 'input_csv.txt'
+IS_LIST: bool = False
+PATH: str = 'data.csv'
+EXPORT_PATH: str = 'output_data.csv'
+FILE_1: str = 'input.txt'
+FILE_2: str = 'input_csv.txt'
 
 
-def read_csv(path):
+def read_csv(path: str) -> List[str]:
     """Получение ip-адресов из csv-файла."""
     with open(path, 'r', encoding='utf-8') as csv_file:
         file_reader = csv.DictReader(csv_file, delimiter = ',')
@@ -19,7 +21,7 @@ def read_csv(path):
         return ip_addresses
 
 
-def export_to_csv(export_path, ip_addresses):
+def export_to_csv(export_path: str, ip_addresses: List[Dict]) -> None :
     """Загрузка данных в csv-файл."""
     with open(export_path, 'w', encoding='utf-8') as csv_file:
         names = ['ip', 'provider']
@@ -34,7 +36,7 @@ def export_to_csv(export_path, ip_addresses):
                 file_writer.writerow({'ip': ip, 'provider': provider})
 
 
-def get_provider(ip_address):
+def get_provider(ip_address: str) -> str:
     """Определение провайдера по ip-адресу."""
     try:
         IP_API_URL = f'http://ip-api.com/json/{ip_address}'
@@ -47,7 +49,7 @@ def get_provider(ip_address):
          raise Exception(f'Сбой при обращении к сервису IP-API: {error}')
 
 
-def get_octets_from_ip(ip_address):
+def get_octets_from_ip(ip_address: str) -> List[int]:
     """Преобразование ip-адреса (либо маски подсети) в список октетов."""
     octet_list = []
     for octet in ip_address.split('.'):
@@ -55,7 +57,8 @@ def get_octets_from_ip(ip_address):
     return octet_list
 
 
-def compare_ip_and_mask(ip_octet_list, mask_octet_list):
+def compare_ip_and_mask(ip_octet_list: List[int],
+                        mask_octet_list: List[int]) -> List[int]:
     """Сравнение двоичных чисел в ip-адресе и маске подсети.
     (Операция AND).
     """
@@ -65,7 +68,9 @@ def compare_ip_and_mask(ip_octet_list, mask_octet_list):
     return ip_and_mask_compare_list
 
 
-def filter_ip_addresses(network_ip, subnet_mask, ip_addresses):
+def filter_ip_addresses(network_ip: str,
+                        subnet_mask: str,
+                        ip_addresses: List[str]) -> Union[List[Dict], str]:
     """Фильтрация ip-адресов. Добавление в итоговый список адресов,
     входящих в указанную сеть, а также их провайдеров.
     """
@@ -89,7 +94,7 @@ def filter_ip_addresses(network_ip, subnet_mask, ip_addresses):
     return f'Отфильтрованный список записан в файл {EXPORT_PATH}'
 
 
-def read_list_data(is_list):
+def read_list_data(is_list: bool) -> Tuple[str, str, List[str]]:
     """Чтение пользовательских данных из текстового файла.
     """
     if is_list == True:
@@ -106,7 +111,7 @@ def read_list_data(is_list):
     return network_ip, subnet_mask, ip_addresses
 
 
-def main():
+def main() -> None:
     """Основная функция. Вывод отфильтрованного списка ip-адресов."""
     network_ip, subnet_mask, ip_addresses = read_list_data(IS_LIST)
     print(filter_ip_addresses(network_ip, subnet_mask, ip_addresses))
