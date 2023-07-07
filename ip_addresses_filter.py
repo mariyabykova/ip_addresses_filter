@@ -1,4 +1,19 @@
+import csv
 import requests
+
+
+IS_LIST = False
+PATH = 'data.csv'
+
+
+def read_csv(path):
+    """Получение ip-адресов из csv-файла."""
+    with open(path, 'r', encoding='utf-8') as csv_file:
+        file_reader = csv.DictReader(csv_file, delimiter = ',')
+        ip_addresses = []
+        for row in file_reader:
+            ip_addresses.append(row['ip'])
+        return ip_addresses
 
 
 def get_provider(ip_address):
@@ -52,11 +67,20 @@ def filter_ip_addresses(network_ip, subnet_mask, ip_addresses):
     return filtered_list
 
 
-def main():
+def read_list_data(is_list):
+    if is_list == False:
+        ip_addresses = read_csv(PATH)
     with open('input.txt', 'r') as file:
         network_ip = file.readline()
         subnet_mask = file.readline()
-        ip_addresses = file.readline().split()
+        if is_list == True:
+            ip_addresses = file.readline().split()
+    return network_ip, subnet_mask, ip_addresses
+
+
+def main():
+    network_ip, subnet_mask, ip_addresses = read_list_data(IS_LIST)
+    # print(network_ip, subnet_mask, ip_addresses)
     print(filter_ip_addresses(network_ip, subnet_mask, ip_addresses))
 
 

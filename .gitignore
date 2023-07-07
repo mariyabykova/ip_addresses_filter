@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 draft.py
 input.txt
+data.csv
+output_data.csv
