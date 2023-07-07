@@ -18,7 +18,9 @@ def read_csv(path):
             ip_addresses.append(row['ip'])
         return ip_addresses
 
+
 def export_to_csv(export_path, ip_addresses):
+    """Загрузка данных в csv-файл."""
     with open(export_path, 'w', encoding='utf-8') as csv_file:
         names = ['ip', 'provider']
         file_writer = csv.DictWriter(
@@ -30,7 +32,6 @@ def export_to_csv(export_path, ip_addresses):
         for address in ip_addresses:
             for ip, provider in address.items():
                 file_writer.writerow({'ip': ip, 'provider': provider})
-        return ip_addresses
 
 
 def get_provider(ip_address):
