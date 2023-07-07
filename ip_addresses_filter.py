@@ -4,6 +4,7 @@ import requests
 
 IS_LIST = False
 PATH = 'data.csv'
+EXPORT_PATH = 'output_data.csv'
 FILE_1 = 'input.txt'
 FILE_2 = 'input_csv.txt'
 
@@ -15,6 +16,20 @@ def read_csv(path):
         ip_addresses = []
         for row in file_reader:
             ip_addresses.append(row['ip'])
+        return ip_addresses
+
+def export_to_csv(export_path, ip_addresses):
+    with open(export_path, 'w', encoding='utf-8') as csv_file:
+        names = ['ip', 'provider']
+        file_writer = csv.DictWriter(
+            csv_file,
+            delimiter = ',',
+            fieldnames=names
+        )
+        file_writer.writeheader()
+        for address in ip_addresses:
+            for ip, provider in address.items():
+                file_writer.writerow({'ip': ip, 'provider': provider})
         return ip_addresses
 
 
@@ -41,7 +56,8 @@ def get_octets_from_ip(ip_address):
 
 def compare_ip_and_mask(ip_octet_list, mask_octet_list):
     """Сравнение двоичных чисел в ip-адресе и маске подсети.
-    (Операция AND)."""
+    (Операция AND).
+    """
     ip_and_mask_compare_list = []
     for ip_address, subnet_mask in zip(ip_octet_list, mask_octet_list):
         ip_and_mask_compare_list.append(ip_address & subnet_mask)
@@ -50,7 +66,7 @@ def compare_ip_and_mask(ip_octet_list, mask_octet_list):
 
 def filter_ip_addresses(network_ip, subnet_mask, ip_addresses):
     """Фильтрация ip-адресов. Добавление в итоговый список адресов,
-    входящих в указанную сеть.
+    входящих в указанную сеть, а также их провайдеров.
     """
     network_octet_list = get_octets_from_ip(network_ip)
     subnet_mask_octet_list = get_octets_from_ip(subnet_mask)
@@ -66,10 +82,15 @@ def filter_ip_addresses(network_ip, subnet_mask, ip_addresses):
         if ip_and_mask_compare_list == network_and_subnet_compare_list:
             provider = get_provider(ip)
             filtered_list.append({ip: provider})
-    return filtered_list
+    if IS_LIST == True:
+        return filtered_list
+    export_to_csv(EXPORT_PATH, filtered_list)
+    return f'Отфильтрованный список записан в файл {EXPORT_PATH}'
 
 
 def read_list_data(is_list):
+    """Чтение пользовательских данных из текстового файла.
+    """
     if is_list == True:
         with open(FILE_1, 'r') as file:
             network_ip = file.readline()
@@ -85,8 +106,8 @@ def read_list_data(is_list):
 
 
 def main():
+    """Основная функция. Вывод отфильтрованного списка ip-адресов."""
     network_ip, subnet_mask, ip_addresses = read_list_data(IS_LIST)
-    # print(network_ip, subnet_mask, ip_addresses)
     print(filter_ip_addresses(network_ip, subnet_mask, ip_addresses))
 
 
