@@ -43,12 +43,8 @@ ip,provider
 
 Клонировать репозиторий и перейти в него в командной строке:
 
-``` git clone git@github.com:mariyabykova/simple_chatgpt_bot.git``` 
-``` cd  simple_chatgpt_bot```
-
-Создать в директории проекта файл .env и добавить туда необходимые для работы бота переменные. Пример можно посмотреть в файле .env.example.
-
-Создать виртуальное окружение:
+``` git@github.com:mariyabykova/ip_addresses_filter.git ``` 
+``` cd  ip_addresses_filter ```
 
 * Если у вас Linux/macOS:
     ``` python3 -m venv venv ``` 
@@ -74,7 +70,7 @@ ip,provider
 
 Запустить проект:
 
-``` python3 simple_chatgpt_bot.py ``` 
+``` python3 ip_addresses_filter.py ``` 
 
 
 ### Автор проекта
