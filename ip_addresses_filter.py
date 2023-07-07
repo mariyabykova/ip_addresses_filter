@@ -14,20 +14,20 @@ FILE_2: str = 'input_csv.txt'
 def read_csv(path: str) -> List[str]:
     """Получение ip-адресов из csv-файла."""
     with open(path, 'r', encoding='utf-8') as csv_file:
-        file_reader = csv.DictReader(csv_file, delimiter = ',')
+        file_reader = csv.DictReader(csv_file, delimiter=',')
         ip_addresses = []
         for row in file_reader:
             ip_addresses.append(row['ip'])
         return ip_addresses
 
 
-def export_to_csv(export_path: str, ip_addresses: List[Dict]) -> None :
+def export_to_csv(export_path: str, ip_addresses: List[Dict]) -> None:
     """Загрузка данных в csv-файл."""
     with open(export_path, 'w', encoding='utf-8') as csv_file:
         names = ['ip', 'provider']
         file_writer = csv.DictWriter(
             csv_file,
-            delimiter = ',',
+            delimiter=',',
             fieldnames=names
         )
         file_writer.writeheader()
@@ -46,7 +46,7 @@ def get_provider(ip_address: str) -> str:
             return provider
         return 'Неизвестный провайдер'
     except Exception as error:
-         raise Exception(f'Сбой при обращении к сервису IP-API: {error}')
+        raise Exception(f'Сбой при обращении к сервису IP-API: {error}')
 
 
 def get_octets_from_ip(ip_address: str) -> List[int]:
@@ -88,7 +88,7 @@ def filter_ip_addresses(network_ip: str,
         if ip_and_mask_compare_list == network_and_subnet_compare_list:
             provider = get_provider(ip)
             filtered_list.append({ip: provider})
-    if IS_LIST == True:
+    if IS_LIST is True:
         return filtered_list
     export_to_csv(EXPORT_PATH, filtered_list)
     return f'Отфильтрованный список записан в файл {EXPORT_PATH}'
@@ -97,12 +97,12 @@ def filter_ip_addresses(network_ip: str,
 def read_list_data(is_list: bool) -> Tuple[str, str, List[str]]:
     """Чтение пользовательских данных из текстового файла.
     """
-    if is_list == True:
+    if is_list is True:
         with open(FILE_1, 'r') as file:
             network_ip = file.readline()
             subnet_mask = file.readline()
             ip_addresses = file.readline().split()
-    if is_list == False:
+    if is_list is False:
         with open(FILE_2, 'r') as file:
             network_ip = file.readline()
             subnet_mask = file.readline()
