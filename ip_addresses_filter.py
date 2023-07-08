@@ -70,7 +70,8 @@ def compare_ip_and_mask(ip_octet_list: List[int],
 
 def filter_ip_addresses(network_ip: str,
                         subnet_mask: str,
-                        ip_addresses: List[str]) -> Union[List[Dict], str]:
+                        ip_addresses: List[str],
+                        is_list: bool = IS_LIST) -> Union[List[Dict], str]:
     """Фильтрация ip-адресов. Добавление в итоговый список адресов,
     входящих в указанную сеть, а также их провайдеров.
     """
@@ -88,7 +89,7 @@ def filter_ip_addresses(network_ip: str,
         if ip_and_mask_compare_list == network_and_subnet_compare_list:
             provider = get_provider(ip)
             filtered_list.append({ip: provider})
-    if IS_LIST is True:
+    if is_list is True:
         return filtered_list
     export_to_csv(EXPORT_PATH, filtered_list)
     return f'Отфильтрованный список записан в файл {EXPORT_PATH}'
@@ -114,7 +115,7 @@ def read_list_data(is_list: bool) -> Tuple[str, str, List[str]]:
 def main() -> None:
     """Основная функция. Вывод отфильтрованного списка ip-адресов."""
     network_ip, subnet_mask, ip_addresses = read_list_data(IS_LIST)
-    print(filter_ip_addresses(network_ip, subnet_mask, ip_addresses))
+    print(filter_ip_addresses(network_ip, subnet_mask, ip_addresses, IS_LIST))
 
 
 if __name__ == '__main__':
