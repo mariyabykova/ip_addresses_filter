@@ -1,4 +1,5 @@
 import csv
+import re
 from typing import Dict, List, Tuple, Union
 
 import requests
@@ -68,6 +69,31 @@ def compare_ip_and_mask(ip_octet_list: List[int],
     return ip_and_mask_compare_list
 
 
+def validate_ip_adress(ip_address: str) -> bool:
+    octet_list = get_octets_from_ip(ip_address)
+    if len(octet_list) != 4:
+        return False
+    flag = False
+    for octet in octet_list:
+        if len(str(octet)) > 1 and str(octet).startswith('0'):
+            return False
+        if str(octet).isdigit() and int(octet) >= 0 and int(octet) <= 127:
+            flag = True
+        else:
+            return False
+    return flag
+
+
+def validate_mask(ip_mask):
+    regex = ('^(((127\.){3}(127|126|124|120|112|96|64|0+))|((127\.){2}'
+            '(127|126|124|120|112|96|64|0+)\.0)|((127\.)'
+            '(127|126|124|120|112|96|64|0+)(\.0+){2})|'
+            '((127|126|124|120|112|96|64|0+)(\.0+){3}))$')
+    if re.match(regex, ip_mask):
+        return True
+    return False
+
+
 def filter_ip_addresses(network_ip: str,
                         subnet_mask: str,
                         ip_addresses: List[str],
@@ -75,6 +101,10 @@ def filter_ip_addresses(network_ip: str,
     """Фильтрация ip-адресов. Добавление в итоговый список адресов,
     входящих в указанную сеть, а также их провайдеров.
     """
+    if not validate_ip_adress(network_ip):
+        raise ValueError
+    if not validate_mask(subnet_mask):
+        raise ValueError
     network_octet_list = get_octets_from_ip(network_ip)
     subnet_mask_octet_list = get_octets_from_ip(subnet_mask)
     network_and_subnet_compare_list = compare_ip_and_mask(
@@ -82,13 +112,14 @@ def filter_ip_addresses(network_ip: str,
     )
     filtered_list = []
     for ip in ip_addresses:
-        octet_list = get_octets_from_ip(ip)
-        ip_and_mask_compare_list = compare_ip_and_mask(
-            octet_list, subnet_mask_octet_list
-        )
-        if ip_and_mask_compare_list == network_and_subnet_compare_list:
-            provider = get_provider(ip)
-            filtered_list.append({ip: provider})
+        if validate_ip_adress(ip):
+            octet_list = get_octets_from_ip(ip)
+            ip_and_mask_compare_list = compare_ip_and_mask(
+                octet_list, subnet_mask_octet_list
+            )
+            if ip_and_mask_compare_list == network_and_subnet_compare_list:
+                provider = get_provider(ip)
+                filtered_list.append({ip: provider})
     if is_list is True:
         return filtered_list
     export_to_csv(EXPORT_PATH, filtered_list)
