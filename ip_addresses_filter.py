@@ -69,7 +69,7 @@ def compare_ip_and_mask(ip_octet_list: List[int],
     return ip_and_mask_compare_list
 
 
-def validate_ip_adress(ip_address: str) -> bool:
+def validate_ip_address(ip_address: str) -> bool:
     """Валидация ip-адреса."""
     octet_list = get_octets_from_ip(ip_address)
     if len(octet_list) != 4:
@@ -103,7 +103,7 @@ def filter_ip_addresses(network_ip: str,
     """Фильтрация ip-адресов. Добавление в итоговый список адресов,
     входящих в указанную сеть, а также их провайдеров.
     """
-    if not validate_ip_adress(network_ip):
+    if not validate_ip_address(network_ip):
         raise ValueError
     if not validate_mask(subnet_mask):
         raise ValueError
@@ -114,7 +114,7 @@ def filter_ip_addresses(network_ip: str,
     )
     filtered_list = []
     for ip in ip_addresses:
-        if validate_ip_adress(ip):
+        if validate_ip_address(ip):
             octet_list = get_octets_from_ip(ip)
             ip_and_mask_compare_list = compare_ip_and_mask(
                 octet_list, subnet_mask_octet_list
