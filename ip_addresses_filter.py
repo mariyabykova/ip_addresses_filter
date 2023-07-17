@@ -70,6 +70,7 @@ def compare_ip_and_mask(ip_octet_list: List[int],
 
 
 def validate_ip_adress(ip_address: str) -> bool:
+    """Валидация ip-адреса."""
     octet_list = get_octets_from_ip(ip_address)
     if len(octet_list) != 4:
         return False
@@ -85,6 +86,7 @@ def validate_ip_adress(ip_address: str) -> bool:
 
 
 def validate_mask(ip_mask):
+    """Валидация маски подсети."""
     regex = ('^(((127\.){3}(127|126|124|120|112|96|64|0+))|((127\.){2}'
             '(127|126|124|120|112|96|64|0+)\.0)|((127\.)'
             '(127|126|124|120|112|96|64|0+)(\.0+){2})|'
